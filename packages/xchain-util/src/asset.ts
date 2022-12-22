@@ -241,6 +241,8 @@ export const AssetRuneB1A: Asset = { chain: Chain.Binance, symbol: 'RUNE-B1A', t
  */
 export const AssetRuneNative: Asset = { chain: Chain.THORChain, symbol: RUNE_TICKER, ticker: RUNE_TICKER, synth: false }
 
+export const AssetCacao: Asset = { chain: Chain.MAYAChain, symbol: 'CACAO', ticker: 'CACAO', synth: false }
+
 /**
  * Base "chain" asset for RUNE on ethereum main net.
  *
