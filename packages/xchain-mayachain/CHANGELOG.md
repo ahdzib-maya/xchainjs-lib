@@ -150,7 +150,7 @@
 
 ## Breaking change
 
-- Remove `AssetRune` in favour of using `AssetRuneNative` of `xchain-util` only
+- Remove `AssetRune` in favour of using `AssetCacao` of `xchain-util` only
 - Extract `getChainId` into `util` module
 
 # v.0.17.7 (2021-07-20)

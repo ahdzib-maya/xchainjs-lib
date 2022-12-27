@@ -16,6 +16,7 @@ export const BNBChain = Chain.Binance
 export const BTCChain = Chain.Bitcoin
 export const ETHChain = Chain.Ethereum
 export const THORChain = Chain.THORChain
+export const MAYAChain = Chain.MAYAChain
 export const CosmosChain = Chain.Cosmos
 export const PolkadotChain = Chain.Polkadot
 export const BCHChain = Chain.BitcoinCash

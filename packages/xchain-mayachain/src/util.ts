@@ -3,7 +3,7 @@ import { Address, Balance, FeeType, Fees, Network, TxHash, TxType, singleFee } f
 import { CosmosSDKClient, TxLog } from '@xchainjs/xchain-cosmos'
 import {
   Asset,
-  AssetRuneNative,
+  AssetCacao,
   BaseAmount,
   assetAmount,
   assetFromString,
@@ -25,14 +25,14 @@ export const DEPOSIT_GAS_VALUE = '500000000'
 export const MAX_TX_COUNT = 100
 
 /**
- * Checks whether an asset is `AssetRuneNative`
+ * Checks whether an asset is `AssetCacao`
  *
  * @param {Asset} asset
  * @returns {boolean} `true` or `false`
  */
-export const isAssetRuneNative = (asset: Asset): boolean => assetToString(asset) === assetToString(AssetRuneNative)
+export const isAssetCacaoNative = (asset: Asset): boolean => assetToString(asset) === assetToString(AssetCacao)
 
-const DENOM_RUNE_NATIVE = 'rune'
+const DENOM_CACAO_NATIVE = 'cacao'
 /**
  * Get denomination from Asset
  *
@@ -40,7 +40,7 @@ const DENOM_RUNE_NATIVE = 'rune'
  * @returns {string} The denomination of the given asset.
  */
 export const getDenom = (asset: Asset): string => {
-  if (isAssetRuneNative(asset)) return DENOM_RUNE_NATIVE
+  if (isAssetCacaoNative(asset)) return DENOM_CACAO_NATIVE
   if (isSynthAsset(asset)) return assetToString(asset).toLowerCase()
   return asset.symbol.toLowerCase()
 }
@@ -52,7 +52,7 @@ export const getDenom = (asset: Asset): string => {
  * @returns {Asset|null} The asset of the given denomination.
  */
 export const assetFromDenom = (denom: string): Asset | null => {
-  if (denom === DENOM_RUNE_NATIVE) return AssetRuneNative
+  if (denom === DENOM_CACAO_NATIVE) return AssetCacao
   return assetFromString(denom.toUpperCase())
 }
 
@@ -127,7 +127,7 @@ export const getDepositTxDataFromLogs = (logs: TxLog[], address: Address): TxDat
         const newData = acc2[acc2.length - 1]
         if (key === 'sender') newData.sender = value
         if (key === 'recipient') newData.recipient = value
-        if (key === 'amount') newData.amount = baseAmount(value.replace(/rune/, ''), DECIMAL)
+        if (key === 'amount') newData.amount = baseAmount(value.replace(/cacao/, ''), DECIMAL)
         return acc2
       }, acc)
     }
@@ -156,7 +156,7 @@ export const getDepositTxDataFromLogs = (logs: TxLog[], address: Address): TxDat
  * @returns {Fees} The default fee.
  */
 export const getDefaultFees = (): Fees => {
-  const fee = assetToBase(assetAmount(0.02 /* 0.02 RUNE */, DECIMAL))
+  const fee = assetToBase(assetAmount(0.02 /* 0.02 CACAO */, DECIMAL))
   return singleFee(FeeType.FlatFee, fee)
 }
 
@@ -288,7 +288,7 @@ export const buildDepositTx = async ({
  * @param fromAddress - required, from address string
  * @param toAddress - required, to address string
  * @param assetAmount - required, asset amount string (e.g. "10000")
- * @param assetDenom - required, asset denom string (e.g. "rune")
+ * @param assetDenom - required, asset denom string (e.g. "cacao")
  * @param memo - optional, memo string
  *
  * @returns
@@ -358,7 +358,7 @@ export const getBalance = async ({
   const balances = await cosmosClient.getBalance(address)
   return balances
     .map((balance) => ({
-      asset: (balance.denom && assetFromDenom(balance.denom)) || AssetRuneNative,
+      asset: (balance.denom && assetFromDenom(balance.denom)) || AssetCacao,
       amount: baseAmount(balance.amount, DECIMAL),
     }))
     .filter(

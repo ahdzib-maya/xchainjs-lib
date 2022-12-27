@@ -1,5 +1,5 @@
 import { Network } from '@xchainjs/xchain-client'
-import { AssetBNB, AssetETH, AssetRuneNative, assetAmount, assetToBase } from '@xchainjs/xchain-util'
+import { AssetBNB, AssetCacao, AssetETH, assetAmount, assetToBase } from '@xchainjs/xchain-util'
 // import nock from 'nock'
 
 import { mockTendermintNodeInfo } from '../__mocks__/thornode-api'
@@ -22,8 +22,8 @@ import {
 
 describe('thorchain/util', () => {
   describe('isAssetRuneNative', () => {
-    it('true for AssetRuneNative', () => {
-      expect(isAssetRuneNative(AssetRuneNative)).toBeTruthy()
+    it('true for AssetCacao', () => {
+      expect(isAssetRuneNative(AssetCacao)).toBeTruthy()
     })
     it('false for ETH', () => {
       expect(isAssetRuneNative(AssetETH)).toBeFalsy()
@@ -35,7 +35,7 @@ describe('thorchain/util', () => {
   describe('Denom <-> Asset', () => {
     describe('getDenom', () => {
       it('get denom for AssetRune', () => {
-        expect(getDenom(AssetRuneNative)).toEqual('rune')
+        expect(getDenom(AssetCacao)).toEqual('rune')
       })
       it('get denom for BNB synth', () => {
         expect(getDenom({ ...AssetBNB, synth: true })).toEqual('bnb/bnb')
@@ -44,7 +44,7 @@ describe('thorchain/util', () => {
 
     describe('getAsset', () => {
       it('rune', () => {
-        expect(assetFromDenom('rune')).toEqual(AssetRuneNative)
+        expect(assetFromDenom('rune')).toEqual(AssetCacao)
       })
       it('bnb/bnb', () => {
         expect(assetFromDenom('bnb/bnb')).toEqual({ ...AssetBNB, synth: true })

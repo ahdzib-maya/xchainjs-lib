@@ -19,15 +19,7 @@ import {
   singleFee,
 } from '@xchainjs/xchain-client'
 import { CosmosSDKClient, RPCTxResult } from '@xchainjs/xchain-cosmos'
-import {
-  Asset,
-  AssetRuneNative,
-  BaseAmount,
-  Chain,
-  assetFromString,
-  assetToString,
-  baseAmount,
-} from '@xchainjs/xchain-util'
+import { Asset, AssetCacao, BaseAmount, Chain, assetFromString, assetToString, baseAmount } from '@xchainjs/xchain-util'
 import axios from 'axios'
 
 import { buildDepositTx, buildTransferTx, buildUnsignedTx } from '.'
@@ -58,7 +50,6 @@ import {
   getExplorerAddressUrl,
   getExplorerTxUrl,
   getPrefix,
-  isAssetRuneNative,
   registerDespositCodecs,
   registerSendCodecs,
 } from './util'
@@ -366,7 +357,7 @@ class Client extends BaseXChainClient implements MayachainClient, XChainClient {
 
     return {
       hash: txId,
-      asset: AssetRuneNative,
+      asset: AssetCacao,
       from,
       to,
       date: new Date(txResult.timestamp),
@@ -403,7 +394,7 @@ class Client extends BaseXChainClient implements MayachainClient, XChainClient {
     })
 
     return {
-      asset: asset || AssetRuneNative,
+      asset: asset || AssetCacao,
       from,
       to,
       type: TxType.Transfer,
@@ -420,25 +411,25 @@ class Client extends BaseXChainClient implements MayachainClient, XChainClient {
    * @throws {"insufficient funds"} Thrown if the wallet has insufficient funds.
    * @throws {"failed to broadcast transaction"} Thrown if failed to broadcast transaction.
    */
-  async deposit({ walletIndex = 0, asset = AssetRuneNative, amount, memo }: DepositParam): Promise<TxHash> {
+  async deposit({ walletIndex = 0, asset = AssetCacao, amount, memo }: DepositParam): Promise<TxHash> {
     await registerDespositCodecs()
     const balances = await this.getBalance(this.getAddress(walletIndex))
-    const runeBalance: BaseAmount =
-      balances.filter(({ asset }) => isAssetRuneNative(asset))[0]?.amount ?? baseAmount(0, DECIMAL)
+    const cacaoBalance: BaseAmount =
+      balances.filter(({ asset }) => asset.ticker === AssetCacao.ticker)[0]?.amount ?? baseAmount(0, DECIMAL)
     const assetBalance: BaseAmount =
       balances.filter(({ asset: assetInList }) => assetToString(assetInList) === assetToString(asset))[0]?.amount ??
       baseAmount(0, DECIMAL)
 
     const { average: fee } = await this.getFees()
 
-    if (isAssetRuneNative(asset)) {
-      // amount + fee < runeBalance
-      if (runeBalance.lt(amount.plus(fee))) {
+    if (asset.ticker === AssetCacao.ticker) {
+      // amount + fee < cacaoBalance
+      if (cacaoBalance.lt(amount.plus(fee))) {
         throw new Error('insufficient funds')
       }
     } else {
-      // amount < assetBalances && runeBalance < fee
-      if (assetBalance.lt(amount) || runeBalance.lt(fee)) {
+      // amount < assetBalances && cacaoBalance < fee
+      if (assetBalance.lt(amount) || cacaoBalance.lt(fee)) {
         throw new Error('insufficient funds')
       }
     }
@@ -483,25 +474,25 @@ class Client extends BaseXChainClient implements MayachainClient, XChainClient {
    * @param {TxParams} params The transfer options.
    * @returns {TxHash} The transaction hash.
    */
-  async transfer({ walletIndex = 0, asset = AssetRuneNative, amount, recipient, memo }: TxParams): Promise<TxHash> {
+  async transfer({ walletIndex = 0, asset = AssetCacao, amount, recipient, memo }: TxParams): Promise<TxHash> {
     await registerSendCodecs()
     const balances = await this.getBalance(this.getAddress(walletIndex))
-    const runeBalance: BaseAmount =
-      balances.filter(({ asset }) => isAssetRuneNative(asset))[0]?.amount ?? baseAmount(0, DECIMAL)
+    const cacaoBalance: BaseAmount =
+      balances.filter(({ asset }) => asset.ticker === AssetCacao.ticker)[0]?.amount ?? baseAmount(0, DECIMAL)
     const assetBalance: BaseAmount =
       balances.filter(({ asset: assetInList }) => assetToString(assetInList) === assetToString(asset))[0]?.amount ??
       baseAmount(0, DECIMAL)
 
     const fee = (await this.getFees()).average
 
-    if (isAssetRuneNative(asset)) {
-      // amount + fee < runeBalance
-      if (runeBalance.lt(amount.plus(fee))) {
+    if (asset.ticker === AssetCacao.ticker) {
+      // amount + fee < cacaoBalance
+      if (cacaoBalance.lt(amount.plus(fee))) {
         throw new Error('insufficient funds')
       }
     } else {
-      // amount < assetBalances && runeBalance < fee
-      if (assetBalance.lt(amount) || runeBalance.lt(fee)) {
+      // amount < assetBalances && cacaoBalance < fee
+      if (assetBalance.lt(amount) || cacaoBalance.lt(fee)) {
         throw new Error('insufficient funds')
       }
     }
@@ -543,25 +534,25 @@ class Client extends BaseXChainClient implements MayachainClient, XChainClient {
    */
   async transferOffline({
     walletIndex = 0,
-    asset = AssetRuneNative,
+    asset = AssetCacao,
     amount,
     recipient,
     memo,
-    from_rune_balance,
+    from_cacao_balance,
     from_asset_balance = baseAmount(0, DECIMAL),
     from_account_number = '0',
     from_sequence = '0',
   }: TxOfflineParams): Promise<string> {
     const fee = (await this.getFees()).average
 
-    if (isAssetRuneNative(asset)) {
-      // amount + fee < runeBalance
-      if (from_rune_balance.lt(amount.plus(fee))) {
+    if (asset.ticker === AssetCacao.ticker) {
+      // amount + fee < cacaoBalance
+      if (from_cacao_balance.lt(amount.plus(fee))) {
         throw new Error('insufficient funds')
       }
     } else {
-      // amount < assetBalances && runeBalance < fee
-      if (from_asset_balance.lt(amount) || from_rune_balance.lt(fee)) {
+      // amount < assetBalances && cacaoBalance < fee
+      if (from_asset_balance.lt(amount) || from_cacao_balance.lt(fee)) {
         throw new Error('insufficient funds')
       }
     }

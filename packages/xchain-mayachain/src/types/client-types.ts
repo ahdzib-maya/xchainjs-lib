@@ -36,12 +36,12 @@ export type TxData = Pick<Tx, 'from' | 'to' | 'type'>
 
 export type TxOfflineParams = TxParams & {
   /**
-   * Balance of Rune to send from
+   * Balance of Cacao to send from
    */
-  from_rune_balance: BaseAmount
+  from_cacao_balance: BaseAmount
   /**
    * Balance of asset to send from
-   * Optional: It can be ignored if asset to send from is RUNE
+   * Optional: It can be ignored if asset to send from is cacao
    */
   from_asset_balance?: BaseAmount
   from_account_number: string

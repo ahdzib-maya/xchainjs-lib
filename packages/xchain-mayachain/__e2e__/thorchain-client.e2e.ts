@@ -1,7 +1,7 @@
 import { Client as BnbClient } from '@xchainjs/xchain-binance'
 import { Network, TxParams, XChainClient } from '@xchainjs/xchain-client'
 import { Client as ThorClient, ThorchainClient } from '@xchainjs/xchain-thorchain'
-import { Asset, AssetRuneNative, BaseAmount, assetToString, baseAmount, delay } from '@xchainjs/xchain-util'
+import { Asset, AssetCacao, BaseAmount, assetToString, baseAmount, delay } from '@xchainjs/xchain-util'
 
 export type Swap = {
   fromBaseAmount: BaseAmount
@@ -15,8 +15,12 @@ const chainIds = {
   [Network.Testnet]: 'thorchain-testnet-v2',
 }
 
-const thorClient: XChainClient = new ThorClient({ network: Network.Testnet, phrase: process.env.PHRASE, chainIds: chainIds })
-const thorchainClient = thorClient as unknown as ThorchainClient
+const thorClient: XChainClient = new ThorClient({
+  network: Network.Testnet,
+  phrase: process.env.PHRASE,
+  chainIds: chainIds,
+})
+const thorchainClient = (thorClient as unknown) as ThorchainClient
 const bnbClient: XChainClient = new BnbClient({ network: Network.Testnet, phrase: process.env.PHRASE })
 
 describe('thorchain Integration Tests', () => {
@@ -28,12 +32,12 @@ describe('thorchain Integration Tests', () => {
     })
     expect(balances.length).toBeGreaterThan(0)
   })
-  it('should xfer rune from wallet 0 -> 1, with a memo', async () => {
+  it('should xfer cacao from wallet 0 -> 1, with a memo', async () => {
     try {
       const addressTo = thorClient.getAddress(1)
       const transferTx: TxParams = {
         walletIndex: 0,
-        asset: AssetRuneNative,
+        asset: AssetCacao,
         amount: baseAmount('100'),
         recipient: addressTo,
         memo: 'Hi!',
@@ -45,9 +49,8 @@ describe('thorchain Integration Tests', () => {
       throw error
     }
   })
-  it('should swap some rune for BNB', async () => {
+  it('should swap some cacao for BNB', async () => {
     try {
-
       // Wait 10 seconds, make sure previous test has finished to avoid sequnce conflict
       await delay(10 * 1000)
 
@@ -57,12 +60,11 @@ describe('thorchain Integration Tests', () => {
       const hash = await thorchainClient.deposit({
         walletIndex: 0,
         amount: baseAmount('100'),
-        asset: AssetRuneNative,
+        asset: AssetCacao,
         memo,
       })
 
       expect(hash.length).toBeGreaterThan(5)
-
     } catch (error) {
       console.log(error)
       throw error

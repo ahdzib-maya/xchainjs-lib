@@ -4,7 +4,7 @@ import { CosmosSDKClient, RPCResponse, RPCTxSearchResult, TxResponse } from '@xc
 import {
   Asset,
   AssetBNB,
-  AssetRuneNative,
+  AssetCacao,
   BNBChain,
   BaseAmount,
   assetAmount,
@@ -312,7 +312,7 @@ describe('Client Test', () => {
     mockAccountsBalance(thorMainClient.getClientUrl().node, 'thor147jegk6e9sum7w3svy3hy4qme4h6dqdkgxhda5', {
       balances: [
         new proto.cosmos.base.v1beta1.Coin({
-          denom: 'rune',
+          denom: 'cacao',
           amount: '100',
         }),
       ],
@@ -320,11 +320,11 @@ describe('Client Test', () => {
 
     const balances = await thorMainClient.getBalance('thor147jegk6e9sum7w3svy3hy4qme4h6dqdkgxhda5')
     expect(balances.length).toEqual(1)
-    expect(balances[0].asset).toEqual(AssetRuneNative)
+    expect(balances[0].asset).toEqual(AssetCacao)
     expect(balances[0].amount.amount().isEqualTo(baseAmount(100).amount())).toBeTruthy()
   })
 
-  it('rune + synth balances', async () => {
+  it('cacao + synth balances', async () => {
     thorClient.setNetwork(Network.Testnet)
     mockAccountsBalance(thorClient.getClientUrl().node, 'tmaya13gym97tmw3axj3hpewdggy2cr288d3qff5euqc', {
       balances: [
@@ -337,7 +337,7 @@ describe('Client Test', () => {
           amount: '200',
         }),
         new proto.cosmos.base.v1beta1.Coin({
-          denom: 'rune',
+          denom: 'cacao',
           amount: '200',
         }),
       ],
@@ -351,8 +351,8 @@ describe('Client Test', () => {
     // BUSD synth
     expect(balances[1].asset).toEqual({ chain: 'BNB', symbol: 'BUSD-74E', ticker: 'BUSD', synth: true })
     expect(balances[1].amount.amount().isEqualTo(baseAmount(200).amount()))
-    // RUNE
-    expect(balances[2].asset).toEqual(AssetRuneNative)
+    // CACAO
+    expect(balances[2].asset).toEqual(AssetCacao)
     expect(balances[2].amount.amount().isEqualTo(baseAmount(300).amount()))
   })
 
@@ -370,7 +370,7 @@ describe('Client Test', () => {
           amount: '200',
         }),
         new proto.cosmos.base.v1beta1.Coin({
-          denom: 'rune',
+          denom: 'cacao',
           amount: '200',
         }),
       ],
@@ -424,7 +424,7 @@ describe('Client Test', () => {
 
     expect(type).toEqual('transfer')
     expect(hash).toEqual(txHash)
-    expect(asset).toEqual(AssetRuneNative)
+    expect(asset).toEqual(AssetCacao)
     expect(from[0].from).toEqual(address)
     expect(from[0].amount.amount().toString()).toEqual(assetToBase(assetAmount(0.02)).amount().toString())
     expect(from[1].from).toEqual(address)
@@ -464,7 +464,7 @@ describe('Client Test', () => {
     mockAccountsBalance(nodeUrl, testnet_address_path0, {
       balances: [
         new proto.cosmos.base.v1beta1.Coin({
-          denom: 'rune',
+          denom: 'cacao',
           amount: '210000000',
         }),
       ],
@@ -474,7 +474,7 @@ describe('Client Test', () => {
     assertTxsPost(thorClient.getClientUrl().node, expected_txsPost_result)
 
     const result = await thorClient.transfer({
-      asset: AssetRuneNative,
+      asset: AssetCacao,
       recipient: to_address,
       amount: send_amount,
       memo,
@@ -511,7 +511,7 @@ describe('Client Test', () => {
     mockAccountsBalance(nodeUrl, testnet_address_path0, {
       balances: [
         new proto.cosmos.base.v1beta1.Coin({
-          denom: 'rune',
+          denom: 'cacao',
           amount: '210000000',
         }),
       ],
@@ -527,7 +527,7 @@ describe('Client Test', () => {
     assertTxsPost(nodeUrl, expected_txsPost_result)
 
     const result = await thorClient.deposit({
-      asset: AssetRuneNative,
+      asset: AssetCacao,
       amount: send_amount,
       memo,
     })
@@ -544,7 +544,7 @@ describe('Client Test', () => {
 
     expect(type).toEqual('transfer')
     expect(hash).toEqual(txHash)
-    expect(asset).toEqual(AssetRuneNative)
+    expect(asset).toEqual(AssetCacao)
     expect(from[0].from).toEqual(address)
     expect(from[0].amount.amount().toString()).toEqual(assetToBase(assetAmount(0.02)).amount().toString())
     expect(from[1].from).toEqual(address)

@@ -34,7 +34,7 @@
     "bignumber.js": "9.x"
   },
   "devDependencies": {
-    "bignumber.js": "^9.0.0"
+    "bignumber.js": "^9.0.2"
   },
   "publishConfig": {
     "access": "public"
